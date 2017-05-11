@@ -26,12 +26,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 
-const UPDATE_RATE = 2000;
-
-ReactDOM.render(
-  <h1>Loading...</h1>,
-  document.getElementById('content')
-);
+const UPDATE_RATE = 500;
 
 update();
 setInterval(update, UPDATE_RATE);

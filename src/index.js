@@ -29,7 +29,6 @@ const io = require('socket.io')(http);
 const path = require('path');
 
 const SAMPLING_RATE = 500;
-const MAX_HISTORY_SAMPLES = 100;
 
 const sensors = {};
 
@@ -65,7 +64,6 @@ io.on('connection', (socket) => {
         currentTemperature: NaN,
         maxTemperature: -Infinity,
         minTemperature: Infinity,
-        recentSamples: [],
         connected: true
       };
     }
@@ -93,10 +91,6 @@ setInterval(() => {
     }
     if (sensor.minTemperature > sensor.currentTemperature) {
       sensor.minTemperature = sensor.currentTemperature;
-    }
-    sensor.recentSamples.push(sensor.currentTemperature);
-    if (sensor.recentSamples.length > MAX_HISTORY_SAMPLES) {
-      sensor.recentSamples.shift();
     }
   }
 }, SAMPLING_RATE);

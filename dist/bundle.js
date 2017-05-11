@@ -9611,13 +9611,7 @@ SOFTWARE.
 
 
 
-const UPDATE_RATE = 2000;
-
-__WEBPACK_IMPORTED_MODULE_1_react_dom___default.a.render(__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-  'h1',
-  null,
-  'Loading...'
-), document.getElementById('content'));
+const UPDATE_RATE = 500;
 
 update();
 setInterval(update, UPDATE_RATE);
