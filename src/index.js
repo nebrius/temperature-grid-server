@@ -31,12 +31,12 @@ const path = require('path');
 const SAMPLING_RATE = 500;
 const MAX_HISTORY_SAMPLES = 100;
 
-const state = {};
+const sensors = {};
 
-app.use(express.static(path.join(__dirname, '..', 'public')));
+app.use(express.static(path.join(__dirname, '..', 'dist')));
 
-app.get('/api/state', (req, res) => {
-  res.send(state);
+app.get('/api/sensors', (req, res) => {
+  res.send(sensors);
 });
 
 io.on('connection', (socket) => {
@@ -44,25 +44,36 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log(`Sensor ${socket.id} disconnected`);
-    delete state[socket.id];
+    for (const sensorName in sensors) {
+      if (sensors[sensorName].socketId === socket.id) {
+        sensors[sensorName].connected = false;
+        return;
+      }
+    }
+    console.warn('Could not deregister disconnected sensor');
   });
 
   socket.on('register', (msg, ack) => {
     console.log(`Registering sensor ${socket.id} as "${msg.name}"`);
-    state[socket.id] = {
-      name: msg.name,
-      currentTemperature: NaN,
-      recentSamples: []
-    };
+    if (sensors[msg.name]) {
+      sensors[msg.name].socketId = socket.id;
+      sensors[msg.name].connected = true;
+    } else {
+      sensors[msg.name] = {
+        socketId: socket.id,
+        name: msg.name,
+        currentTemperature: NaN,
+        maxTemperature: -Infinity,
+        minTemperature: Infinity,
+        recentSamples: [],
+        connected: true
+      };
+    }
     ack();
   });
 
   socket.on('update', (msg) => {
-    if (state.hasOwnProperty(socket.id)) {
-      state[socket.id].currentTemperature = msg.temperature;
-    } else {
-      console.error(`Received update from unregistered sensor ${socket.id}`);
-    }
+    sensors[msg.name].currentTemperature = msg.temperature;
   });
 
 });
@@ -72,10 +83,16 @@ http.listen(3000, () => {
 });
 
 setInterval(() => {
-  for (const sensorId in state) {
-    const sensor = state[sensorId];
+  for (const sensorName in sensors) {
+    const sensor = sensors[sensorName];
     if (isNaN(sensor.currentTemperature)) {
       continue;
+    }
+    if (sensor.maxTemperature < sensor.currentTemperature) {
+      sensor.maxTemperature = sensor.currentTemperature;
+    }
+    if (sensor.minTemperature > sensor.currentTemperature) {
+      sensor.minTemperature = sensor.currentTemperature;
     }
     sensor.recentSamples.push(sensor.currentTemperature);
     if (sensor.recentSamples.length > MAX_HISTORY_SAMPLES) {

@@ -9,7 +9,9 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./src/index.js"
+    "start": "node ./src/index.js",
+    "prebuild": "cp client/index.html dist/",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -20,5 +22,15 @@
   "bugs": {
     "url": "https://github.com/nebrius/temperature-grid-server/issues"
   },
-  "homepage": "https://github.com/nebrius/temperature-grid-server#readme"
+  "homepage": "https://github.com/nebrius/temperature-grid-server#readme",
+  "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "classnames": "^2.2.5",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "webpack": "^2.5.1"
+  }
 }

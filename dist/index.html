@@ -1,0 +1,79 @@
+<!--
+MIT License
+
+Copyright (c) Bryan Hughes
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+<!DOCTYPE html>
+<html>
+<head>
+<title>Temperature Grid</title>
+<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css" media="screen,projection"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+.logo-padding-hack {
+  padding-left: 15px;
+}
+.nav-wrapper {
+  background-color: purple;
+}
+.card {
+  width: 400px;
+}
+.temperature-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin: 15px;
+}
+html {
+  height: 100%;
+}
+body {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.wrapper {
+  flex: 1;
+}
+</style>
+</head>
+<body>
+
+  <div class="wrapper">
+    <nav>
+      <div class="nav-wrapper">
+        <a href="#" class="brand-logo center">Temperature Grid</a>
+      </div>
+    </nav>
+
+    <div id="content"></div>
+  </div>
+
+  <footer class="page-footer blue-grey lighten-3">
+      <div class="container"></div>
+  </footer>
+
+  <script src="bundle.js"></script>
+</body>
+</html>
