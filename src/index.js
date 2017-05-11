@@ -22,18 +22,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-const app = require('express')();
+const express = require('express');
+const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const path = require('path');
 
 const SAMPLING_RATE = 500;
-
-app.get('/state', (req, res) => {
-  res.send(state);
-});
+const MAX_HISTORY_SAMPLES = 100;
 
 const state = {};
+
+app.use(express.static(path.join(__dirname, '..', 'public')));
+
+app.get('/api/state', (req, res) => {
+  res.send(state);
+});
 
 io.on('connection', (socket) => {
   console.log(`Sensor ${socket.id} connected`);
@@ -44,17 +48,18 @@ io.on('connection', (socket) => {
   });
 
   socket.on('register', (msg, ack) => {
-    console.log(`Registering sensor ${socket.id} as ${msg.name}`);
+    console.log(`Registering sensor ${socket.id} as "${msg.name}"`);
     state[socket.id] = {
       name: msg.name,
-      temperature: NaN
+      currentTemperature: NaN,
+      recentSamples: []
     };
     ack();
   });
 
   socket.on('update', (msg) => {
     if (state.hasOwnProperty(socket.id)) {
-      state[socket.id].temperature = msg.temperature;
+      state[socket.id].currentTemperature = msg.temperature;
     } else {
       console.error(`Received update from unregistered sensor ${socket.id}`);
     }
@@ -67,5 +72,14 @@ http.listen(3000, () => {
 });
 
 setInterval(() => {
-  console.log(state);
+  for (const sensorId in state) {
+    const sensor = state[sensorId];
+    if (isNaN(sensor.currentTemperature)) {
+      continue;
+    }
+    sensor.recentSamples.push(sensor.currentTemperature);
+    if (sensor.recentSamples.length > MAX_HISTORY_SAMPLES) {
+      sensor.recentSamples.shift();
+    }
+  }
 }, SAMPLING_RATE);
